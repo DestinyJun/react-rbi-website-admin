@@ -1,0 +1,10 @@
+/**
+* desc：TextEditor组件样式表
+* author：DestinyJun
+* date：2021/1/20 11:13
+*/
+@import '~braft-editor/dist/index.css';
+.my-component{
+    height: 50vh;
+    width: 80vh;
+}
