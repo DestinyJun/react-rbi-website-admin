@@ -43,15 +43,16 @@ export class TextEditor extends Component {
   myValidateFn(files) {
     // 返回false时则自动上传函数uploadFn不执行，不过其功能跟accepts重叠了，感觉
     const types = ['image/png','image/jpeg','image/gif','image/webp','image/apng'];
-    console.log(types.includes(files.type));
     return  types.includes(files.type);
   }
   // 多媒体文件上传
   imageUpload(params) {
+    console.log(params);
+    return
     const data = new FormData;
     data.append('file',params.file);
     http.post(
-      'http://127.0.01:8090/admin/news/upload',
+      'http://127.0.01:8090/admin/source/upload',
       data,
       {
         headers: {
@@ -60,9 +61,9 @@ export class TextEditor extends Component {
       }
     )
       .then(res => {
-        if (res.data.status === 2000) {
+       /* if (res.data.status === 2000) {
           successFn(res.data)
-        }
+        }*/
         console.log(res);
       })
       .catch(err => {
@@ -103,6 +104,20 @@ export class TextEditor extends Component {
               image: 'image/png,image/jpeg,image/gif,image/webp,image/apng',
             }
           }}
+          extendControls={[
+            'separator',
+            {
+              key: 'my-button', // 控件唯一标识，必传
+              type: 'button',
+              title: '这是一个自定义的按钮', // 指定鼠标悬停提示文案
+              className: 'my-button', // 指定按钮的样式名
+              html: null, // 指定在按钮中渲染的html字符串
+              text: '自定义按钮', // 指定按钮文字，此处可传入jsx，若已指定html，则text不会显示
+              onClick: () => {
+                console.log('Hello World!');
+              },
+            }
+          ]}
           value={editorState}
           onChange={this.handleEditorChange}
           onSave={this.submitContent}

@@ -1,13 +1,16 @@
 import './App.css';
+// import {Uploads} from "./components/Uploads";
 import {TextEditor} from "./components/TextEditor";
+
 
 function App() {
   return (
     <div className="App">
-      {/*<Button type="primary">Button</Button>*/}
+      {/*<Uploads />*/}
       <TextEditor />
     </div>
   );
 }
+
 
 export default App;
