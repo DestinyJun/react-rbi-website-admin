@@ -3,33 +3,74 @@
 * author：DestinyJun
 * date：2021/1/25 21:42
 */
+$text-success: 'red';
 .header{
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
   .logo {
-    float: left;
-    width: 120px;
-    height: 31px;
-    margin: 16px 24px 16px 0;
-    background: rgba(255, 255, 255, 0.3);
+    width: 200px;
+    background: rgba(255, 255, 255, 0.2);
+    text-align: center;
+    transition: all 0.2s;
+    h2{
+      color: white;
+      font-weight: bolder;
+      letter-spacing: 5px;
+    }
+  }
+  @media screen and (max-width: 992px){
+    .logo{
+      width: 80px;
+    }
+  }
+  .info{
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    >*{
+      margin-right: 20px;
+    }
   }
 }
-.sidebar-left{
-  width: 200px
-}
-.content{
-  padding: 0 24px 24px;
-  .content-bread{
-    margin: 16px 0;
+.center{
+  height: calc(100vh - 114px);
+  .sidebar-left{
+    width: 200px;
+    overflow-y: auto;
+    margin-bottom: 24px;
   }
-  .content-body {
-    background: #fff;
-    padding: 24px;
-    margin: 0;
-    min-height: 280px;
+  /*修改滚动条样式*/
+  .sidebar-left::-webkit-scrollbar{
+    width:0;
+    height:0;
+  }
+  .content{
+    padding: 0 24px 24px;
+    .content-bread{
+      margin: 16px 0;
+    }
+    .content-body {
+      background: #fff;
+      padding: 10px;
+      margin: 0;
+      min-height: 280px;
+    }
   }
 }
-.ant-row-rtl .logo {
-  float: right;
-  margin: 16px 0 16px 24px;
+.footer{
+  padding: 0;
+  height: 50px;
+  background: #001529;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  h3{
+    font-size: larger;
+    color: white;
+    letter-spacing: 3px;
+  }
 }
 
 

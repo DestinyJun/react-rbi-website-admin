@@ -9,7 +9,7 @@ import http from 'axios';
 // 引入编辑器组件
 import BraftEditor from 'braft-editor'
 // 引入编辑器组件样式
-import './TextEditor.css';
+import './TextEditor.scss';
 
 export class TextEditor extends Component {
   constructor(props) {

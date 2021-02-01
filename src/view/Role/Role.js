@@ -1,12 +1,12 @@
 /**
- * desc：  首页
+ * desc：  角色管理
  * author：DestinyJun
  * date：  2020/4/21 17:01
  */
 import React, {Component} from 'react';
-import './Home.scss';
+import './Role.scss';
 
-export class Home extends Component {
+export class Role extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -14,10 +14,8 @@ export class Home extends Component {
 
   render() {
     return (
-      <div className="home">
-        <div className="sidebar-left">
-          <span>我送是</span>
-        </div>
+      <div>
+        <p>Role</p>
       </div>
     );
   }
