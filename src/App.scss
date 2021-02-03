@@ -50,3 +50,17 @@
     transform: rotate(360deg);
   }
 }
+
+/*基础样式覆盖*/
+
+// 取消模态框头部的padding属性
+.ant-modal-header{
+  padding: 0 !important;
+}
+// 去掉table组件的滚动轴
+.ant-table-body{
+  &::-webkit-scrollbar{
+    width:0;
+    height:0;
+  }
+}

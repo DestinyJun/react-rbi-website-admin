@@ -9,8 +9,6 @@ import './Layouts.scss';
 import {Layout, Menu, Breadcrumb, Avatar, Badge} from 'antd';
 import {
   UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
   CopyrightOutlined,
   BellOutlined,
   PoweroffOutlined, MailOutlined
@@ -19,6 +17,7 @@ import {post} from "../../service/Interceptor";
 import {LayoutApi} from "../../service/Apis";
 import {Rule} from "../Rule/Rule";
 import {Home} from "../Home/Home";
+import {Column} from "../Column/Column";
 const { SubMenu } = Menu;
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -60,23 +59,19 @@ export class Layouts extends Component {
               {
                 this.state.layMenuList.length>0 && this.state.layMenuList.map((item,index) => {
                   if ('children' in item) {
-                    return (<>
-                      <SubMenu key={`SubMenu_${index}`} icon={<UserOutlined />} title={item.rule_name}>
-                        {
-                          item.children.map((v,k) => (
-                            <Menu.Item key={`child_Menu_${k}`}>
-                              <Link key={`Menu_link_${k}`} to={`${url}${v.rule_router}`}>{v.rule_name}</Link>
-                            </Menu.Item>
-                          ))
-                        }
-                      </SubMenu>
-                    </>)
+                    return (<SubMenu key={`SubMenu_${index}`} icon={<UserOutlined />} title={item.rule_name}>
+                      {
+                        item.children.map((v,k) => (
+                          <Menu.Item key={`child_Menu_${k}`}>
+                            <Link key={`Menu_link_${k}`} to={`${url}${v.rule_router}`}>{v.rule_name}</Link>
+                          </Menu.Item>
+                        ))
+                      }
+                    </SubMenu>)
                   }
-                  return (<>
-                    <Menu.Item key={`Menu_${index}`} icon={<MailOutlined />}>
-                      <Link key={`Menu_link_${index}`} to={`${url}${item.rule_router}`}>{item.rule_name}</Link>
-                    </Menu.Item>
-                  </>)
+                  return (<Menu.Item key={`Menu_${index}`} icon={<MailOutlined />}>
+                    <Link key={`Menu_link_${index}`} to={`${url}${item.rule_router}`}>{item.rule_name}</Link>
+                  </Menu.Item>)
                 })
               }
             </Menu>
@@ -89,12 +84,7 @@ export class Layouts extends Component {
               <Switch>
                 <Route exact path={path} component={Home} />
                 <Route exact path={`${path}/rule`} component={Rule} />
-                <Route exact path={`${path}/components`}>
-                  <h3>components</h3>
-                </Route>
-                <Route exact path={`${path}/item`}>
-                  <h3>item</h3>
-                </Route>
+                <Route exact path={`${path}/column`} component={Column} />
               </Switch>
             </Content>
           </Layout>

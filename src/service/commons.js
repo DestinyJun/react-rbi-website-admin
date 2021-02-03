@@ -90,3 +90,33 @@ export const TABLE_DATA = [
     address: 'Sidney No. 1 Lake Park',
   },
 ];
+
+// ant树型结构数据
+export const TREE_DATA = [
+  {
+    title: 'parent 1',
+    key: '0-0',
+    children: [
+      {
+        title: 'parent 1-0',
+        key: '0-0-0',
+        children: [
+          {
+            title: 'leaf',
+            key: '0-0-0-0',
+            disableCheckbox: true,
+          },
+          {
+            title: 'leaf',
+            key: '0-0-0-1',
+          },
+        ],
+      },
+      {
+        title: 'parent 1-1',
+        key: '0-0-1',
+        children: [{ title: '啊哈', key: '0-0-1-0' }],
+      },
+    ],
+  },
+];

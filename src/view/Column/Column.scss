@@ -1,23 +1,23 @@
 /**
-* desc：Rule组件样式表
+* desc：Column组件样式表
 * author：DestinyJun
-* date：2021/2/1 20:07
+* date：2021/2/3 21:25
 */
-.rule{
+.column{
   width: 100%;
   height: 100%;
-  .rule-title{
+  .column-title{
     text-align: center;
     font-weight: bolder;
   }
-  .rule-btn{
+  .column-btn{
     padding-bottom: 10px;
   }
-  .rule-modal{
+  .column-modal{
 
   }
 }
-.rule-tree-box{
+.column-tree-box{
   height: 20vh;
   overflow-y: scroll;
   &::-webkit-scrollbar{

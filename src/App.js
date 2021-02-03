@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import {Login} from "./view/login/Login";
 import {ErrorPage} from "./view/Error/ErrorPage";
-import {Auth} from "./auth/Auth";
+// import {Auth} from "./auth/Auth";
 import {Layouts} from "./view/Layouts/Layout";
 import {LoadingStore} from "./redux/store";
 import {Spin} from "antd";
