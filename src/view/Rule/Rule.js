@@ -93,7 +93,7 @@ export class Rule extends Component {
         })
       })
   }
-  // 权限添加/修改
+  // 添加/修改
   ruleSave () {
     let url,data;
     if (!this.state.rule_id) {
@@ -110,7 +110,7 @@ export class Rule extends Component {
       })
       .catch(err => {})
   }
-  // 权限删除
+  // 删除
   ruleDel (item) {
     if (window.confirm('确定要删除么?')) {
       post(RuleApi.DEL_RULE, {id: item.id})
@@ -120,7 +120,7 @@ export class Rule extends Component {
         .catch(err => {})
     }
   }
-  // 权限修改
+  // 修改
   ruleUpdate(item) {
     this.setState({
       rule_visible: true,

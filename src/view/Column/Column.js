@@ -5,12 +5,12 @@
  */
 import React, {Component} from 'react';
 import './Column.scss';
-import {Button, Form, Input, InputNumber, Modal, Radio, Select, Space, Table, Tree} from "antd";
+import {Button, Form, Input, InputNumber, Modal, Radio, Space, Table, Tree} from "antd";
 import {post} from "../../service/Interceptor";
-import {ColumnApi, RuleApi} from "../../service/Apis";
+import {ColumnApi} from "../../service/Apis";
 import {reverseTree, transformTree} from "../../service/tools";
 import {ModalHeader} from "../../components/ModalHeader";
-const { Option } = Select;
+import {Uploads} from "../../components/Uploads";
 
 export class Column extends Component {
   constructor(props) {
@@ -21,11 +21,16 @@ export class Column extends Component {
       column_visible: false,
       column_loading: false,
       column_tree_visible: false,
-      column_tree_name: '点击选择父级权限',
+      column_tree_name: '点击选择父级栏目',
       column_id: null,
+      column_has_img: false,
     };
+    // 文件列表
+    this.column_files = [];
     // 表单模型
     this.column_formRef = React.createRef();
+    // 文件上传节点
+    this.column_uploadRef = React.createRef();
     // 表头信息定义
     this.column_column = [
       {
@@ -37,7 +42,7 @@ export class Column extends Component {
         dataIndex: 'has_img',
       },
       {
-        title: '栏目顺序（越小越靠前）',
+        title: '栏目顺序',
         dataIndex: 'column_sort',
       },
       {
@@ -77,48 +82,79 @@ export class Column extends Component {
         })
       })
   }
-  // 权限添加/修改
+  // 添加/修改
   columnSave () {
     let url,data;
     if (!this.state.column_id) {
-      url = RuleApi.ADD_RULE;
+      url = ColumnApi.ADD_COLUMN;
       data = this.column_formRef.current.getFieldsValue()
     } else {
-      url = RuleApi.UPDATE_RULE;
+      url = ColumnApi.UPDATE_COLUMN;
       data = this.column_formRef.current.getFieldsValue();
       data['id'] = this.state.column_id;
     }
-    post(url, data)
+    console.log(this.column_files);
+    // return
+    const formData = new FormData;
+    for (let key in data) {
+      if (data.hasOwnProperty(key)) {
+        if (!data[key]){
+          continue
+        }
+        formData.append(key, data[key])
+      }
+    }
+    if (this.column_files.length>0) {
+      this.column_files.forEach(item => {
+        formData.append('column_img[]', item.originFileObj)
+      })
+    }
+    post(url, formData)
       .then(() => {
         this.columnInit();
       })
       .catch(err => {})
   }
-  // 权限删除
+  // 删除
   columnDel (item) {
     if (window.confirm('确定要删除么?')) {
-      post(RuleApi.DEL_RULE, {id: item.id})
+      post(ColumnApi.DEL_COLUMN, {id: item.id})
         .then(() => {
           this.columnInit();
         })
         .catch(err => {})
     }
   }
-  // 权限修改
+  // 修改
   columnUpdate(item) {
+    // console.log(item);
+    this.column_files = [{
+      uid: '-1',
+      name: 'image.png',
+      status: 'done',
+      url: item.column_img,
+    },]
     this.setState({
       column_visible: true,
       column_id: item.id,
-      column_tree_name: item.parent_name?item.parent_name:'已是顶层结构'
+      column_tree_name: item.parent_name?item.parent_name:'已是顶层栏目',
+      column_has_img: item.has_img === '1',
     },() => {
       this.column_formRef.current.setFieldsValue({
         parent_id: item.parent_id,
         column_name: item.column_name,
-        action_id: item.action_id,
-        column_router: item.column_router,
-        is_show: item.is_show,
+        column_sort: item.column_sort,
+        has_img: item.has_img,
       })
     })
+  }
+  // radio改变
+  columnRadioChange = (info) => {
+    if (info.target.value === '1') {
+      this.setState({column_has_img: true})
+    } else {
+      this.setState({column_has_img: false})
+    }
   }
   // render渲染
   render() {
@@ -126,7 +162,11 @@ export class Column extends Component {
       <div className={'column'}>
         <h2 className="column-title">栏目管理</h2>
         <div className="column-btn">
-          <Button type={'primary'} onClick={() => this.setState({column_visible: true,column_id: null})}>栏目添加</Button>
+          <Button type={'primary'} onClick={() => this.setState({column_visible: true,column_id: null},() => {
+            if (this.column_formRef.current.getFieldValue('has_img') === '1') {
+              this.setState({column_has_img: true})
+            }
+          })}>栏目添加</Button>
         </div>
         <div className="column-table">
           {
@@ -141,16 +181,17 @@ export class Column extends Component {
         <div className="column-modal">
           {/*form弹窗*/}
           <Modal
-            title={<ModalHeader title={'权限添加'} />}
+            title={<ModalHeader title={'栏目操作'} />}
             closable={false}
             visible={this.state.column_visible}
             centered
             okText={'确认'}
             afterClose={() => {
+              this.column_uploadRef.current.handleReset();
               this.column_formRef.current.resetFields();
               this.setState({
                 column_visible: false,
-                column_tree_name: '点击选择父级权限',
+                column_tree_name: '点击选择父级栏目',
               })
             }}
             onOk={() => {
@@ -161,6 +202,7 @@ export class Column extends Component {
             onCancel={() => this.setState({column_visible: false})}
           >
             <Form
+              className={'form'}
               ref={this.column_formRef}
               name={'form'}
               validateMessages={this.column_validateMessages}
@@ -168,53 +210,49 @@ export class Column extends Component {
               wrapperCol={{span: 16}}
               onFinish={this.columnSave.bind(this)}
               initialValues={{
-                parent_id: null,
                 column_name: null,
-                action_id: 1,
-                column_router: null,
-                is_show: '1',
+                column_sort: 0,
+                has_img: '1',
               }}
             >
-              <Form.Item label="父级权限" >
+              <Form.Item label="父级栏目" >
                 <Button type="primary" onClick={() => {
                   this.setState({column_tree_visible: true},() => this.column_formRef.current.resetFields());
                 }}
                         style={{borderColor: '#D9D9D9',textAlign: 'left',color: '#262626',padding: '4px 10px'}} ghost block>
                   {
-                    this.state.column_tree_name === '点击选择父级权限' || this.state.column_tree_name === '已是顶层结构'?
+                    this.state.column_tree_name === '点击选择父级栏目' || this.state.column_tree_name === '已是顶层栏目'?
                       <span style={{color: '#BFBFBF'}}>{this.state.column_tree_name}</span>:
                       this.state.column_tree_name
                   }
                 </Button>
                 <Form.Item name="parent_id" noStyle >
-                  <InputNumber placeholder={'请选择父级权限'} style={{display: 'none'}} />
+                  <InputNumber placeholder={'请选择父级栏目'} style={{display: 'none'}} />
                 </Form.Item>
               </Form.Item>
-              <Form.Item label="权限名称" name="column_name" rules={[{required: true}]}>
-                <Input placeholder={'请输权限名称'} />
+              <Form.Item label="栏目名称" name="column_name" rules={[{required: true}]}>
+                <Input placeholder={'请输栏目名称'} />
               </Form.Item>
-              <Form.Item label="权限标识" name="action_id" rules={[{required: true}]}>
-                <Select notFoundContent={<span>暂无内容</span>}>
-                  {
-                    this.state.column_action_list.length > 0 &&
-                    this.state.column_action_list.map((item,index) => (<Option key={`column_${index}`} value={item.id}>{item.action_name}</Option>))
-                  }
-                </Select>
+              <Form.Item label="栏目排序" name="column_sort" rules={[{required: true}]}>
+                <InputNumber placeholder={'栏目排序(越小越靠前）'} rules={[{types: 'number'}]} />
               </Form.Item>
-              <Form.Item label="权限路由标识" name="column_router" rules={[{required: true}]}>
-                <Input placeholder={'请输权限路由标识'} />
-              </Form.Item>
-              <Form.Item label="是否显示" name="is_show">
-                <Radio.Group>
+              <Form.Item label="是否有图片" name="has_img">
+                <Radio.Group onChange={this.columnRadioChange}>
                   <Radio value={'1'}>是</Radio>
                   <Radio value={'0'}>否</Radio>
                 </Radio.Group>
               </Form.Item>
+              <Form.Item label="图片上传" hidden={!this.state.column_has_img}>
+                <Uploads ref={this.column_uploadRef} imgList={this.column_files} onChange={(files) => {
+                  this.column_files = [...files];
+                  console.log(files);
+                }} />
+              </Form.Item>
             </Form>
           </Modal>
-          {/*权限树弹窗*/}
+          {/*栏目树弹窗*/}
           <Modal
-            title={<ModalHeader title={'父级权限选择'} />}
+            title={<ModalHeader title={'父级栏目选择'} />}
             width={'30vw'}
             centered
             closable={false}
@@ -226,11 +264,19 @@ export class Column extends Component {
               <Tree
                 showLine={true}
                 onSelect={(key,info) => {
-                  this.setState({
-                    column_tree_visible: false,
-                    column_tree_name: info.selectedNodes[0].column_name
-                  })
-                  this.column_formRef.current.setFieldsValue({parent_id: info.selectedNodes[0].id})
+                  if (info.selectedNodes.length === 0) {
+                    this.column_formRef.current.resetFields();
+                    this.setState({
+                      column_tree_visible: false,
+                      column_tree_name: '点击选择父级栏目',
+                    })
+                  } else {
+                    this.setState({
+                      column_tree_visible: false,
+                      column_tree_name: info.selectedNodes[0].column_name
+                    })
+                    this.column_formRef.current.setFieldsValue({parent_id: info.selectedNodes[0].id})
+                  }
                 }}
                 titleRender={(nodeData) => {
                   return (<span>{nodeData.column_name}</span>)
