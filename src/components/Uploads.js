@@ -8,26 +8,23 @@ import {Upload, message, Modal} from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
 import {getBase64} from "../service/tools";
 
-
-
 export class Uploads extends Component {
-  static defaultProps= {
+  static defaultProps = {
     multiple: false, // 是否上传多张图片，默认false
-    max: 1, // 是否上传多张图片，默认false
-    imgList: [], // 是否上传多张图片，默认false
+    max: 1, // 最大上传数量
   }
+
   constructor(props) {
     super(props);
     this.state = {
       previewVisible: false,
       previewImage: '',
       previewTitle: '',
-      fileList: props.imgList,
+      fileList: [],
     };
-    this.fileArray = []
   }
 
-  handleCancel = () => this.setState({ previewVisible: false });
+  handleCancel = () => this.setState({previewVisible: false});
 
   handlePreview = async file => {
     if (!file.url && !file.preview) {
@@ -41,8 +38,8 @@ export class Uploads extends Component {
     });
   };
 
-  handleChange = ({fileList }) => {
-    this.setState({ fileList })
+  handleChange = ({fileList}) => {
+    this.setState({fileList})
     this.props.onChange(fileList);
   };
 
@@ -63,12 +60,11 @@ export class Uploads extends Component {
   }
 
   render() {
-    const { previewVisible, previewImage, fileList, previewTitle } = this.state;
-    // console.log(this.props.imgList);
+    const {previewVisible, previewImage, fileList, previewTitle} = this.state;
     const uploadButton = (
       <div>
-        <PlusOutlined />
-        <div style={{ marginTop: 8 }}>点击上传图片</div>
+        <PlusOutlined/>
+        <div style={{marginTop: 8}}>点击上传图片</div>
       </div>
     );
     return (
@@ -82,7 +78,9 @@ export class Uploads extends Component {
           onPreview={this.handlePreview}
           onChange={this.handleChange}
         >
-          {fileList.length >= this.props.max ? null : uploadButton}
+          {
+            fileList.length >= this.props.max ? null : uploadButton
+          }
         </Upload>
         <Modal
           visible={previewVisible}

@@ -230,6 +230,7 @@ export class Rule extends Component {
           </Modal>
           {/*权限树弹窗*/}
           <Modal
+            destroyOnClose={true}
             title={<ModalHeader title={'父级权限选择'} />}
             width={'30vw'}
             centered

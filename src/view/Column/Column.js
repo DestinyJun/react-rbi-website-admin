@@ -5,12 +5,13 @@
  */
 import React, {Component} from 'react';
 import './Column.scss';
-import {Button, Form, Input, InputNumber, Modal, Radio, Space, Table, Tree} from "antd";
+import {Button, Form, Image, Input, InputNumber, Modal, Radio, Space, Table, Tree} from "antd";
 import {post} from "../../service/Interceptor";
 import {ColumnApi} from "../../service/Apis";
 import {reverseTree, transformTree} from "../../service/tools";
 import {ModalHeader} from "../../components/ModalHeader";
 import {Uploads} from "../../components/Uploads";
+import {EyeOutlined} from '@ant-design/icons';
 
 export class Column extends Component {
   constructor(props) {
@@ -24,6 +25,7 @@ export class Column extends Component {
       column_tree_name: '点击选择父级栏目',
       column_id: null,
       column_has_img: false,
+      column_default_img: [],
     };
     // 文件列表
     this.column_files = [];
@@ -93,8 +95,6 @@ export class Column extends Component {
       data = this.column_formRef.current.getFieldsValue();
       data['id'] = this.state.column_id;
     }
-    console.log(this.column_files);
-    // return
     const formData = new FormData;
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
@@ -127,18 +127,21 @@ export class Column extends Component {
   }
   // 修改
   columnUpdate(item) {
-    // console.log(item);
-    this.column_files = [{
-      uid: '-1',
-      name: 'image.png',
-      status: 'done',
-      url: item.column_img,
-    },]
+    const arr = [];
+    item.column_img.split(',').forEach((val,inx) => {
+      arr.push({
+        uid: `-${inx}`,
+        name: `原有图片-${inx}.png`,
+        status: 'done',
+        url: val,
+      })
+    })
     this.setState({
       column_visible: true,
       column_id: item.id,
       column_tree_name: item.parent_name?item.parent_name:'已是顶层栏目',
       column_has_img: item.has_img === '1',
+      column_default_img: [...arr]
     },() => {
       this.column_formRef.current.setFieldsValue({
         parent_id: item.parent_id,
@@ -192,6 +195,7 @@ export class Column extends Component {
               this.setState({
                 column_visible: false,
                 column_tree_name: '点击选择父级栏目',
+                column_default_img: []
               })
             }}
             onOk={() => {
@@ -243,15 +247,23 @@ export class Column extends Component {
                 </Radio.Group>
               </Form.Item>
               <Form.Item label="图片上传" hidden={!this.state.column_has_img}>
-                <Uploads ref={this.column_uploadRef} imgList={this.column_files} onChange={(files) => {
+                <Uploads ref={this.column_uploadRef} max={3} defaultFileList={this.state.column_default_img} onChange={(files) => {
                   this.column_files = [...files];
-                  console.log(files);
+                  console.log(this.column_files);
                 }} />
+              </Form.Item>
+              <Form.Item label="当前图片" hidden={!this.state.column_default_img.length>0}>
+                {
+                  this.state.column_default_img.map((item,index) =>(<
+                    Image key={`column_image_${index}`} style={{paddingRight: '5px'}} preview={{mask: <EyeOutlined />}} src={item.url} width={120} />))
+                }
+                <p style={{color: "#FF4D4F"}}>注意：一但上传新图片，原有的图片将会被删除</p>
               </Form.Item>
             </Form>
           </Modal>
           {/*栏目树弹窗*/}
           <Modal
+            destroyOnClose={true}
             title={<ModalHeader title={'父级栏目选择'} />}
             width={'30vw'}
             centered
