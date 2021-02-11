@@ -18,6 +18,7 @@ import {LayoutApi} from "../../service/Apis";
 import {Rule} from "../Rule/Rule";
 import {Home} from "../Home/Home";
 import {Column} from "../Column/Column";
+import {RuleAction} from "../RuleAction/RuleAction";
 const { SubMenu } = Menu;
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -85,6 +86,7 @@ export class Layouts extends Component {
                 <Route exact path={path} component={Home} />
                 <Route exact path={`${path}/rule`} component={Rule} />
                 <Route exact path={`${path}/column`} component={Column} />
+                <Route exact path={`${path}/dataConfig/ruleAction`} component={RuleAction} />
               </Switch>
             </Content>
           </Layout>

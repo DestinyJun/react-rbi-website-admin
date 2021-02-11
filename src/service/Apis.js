@@ -25,6 +25,17 @@ export const RuleApi = {
 }
 
 /**
+ * 权限标识接口
+ * @type {{MENU_LIST: string}}
+ */
+export const RuleActionApi = {
+  ADD_RULE_ACTION: '/ruleAction/add', // 权限行为添加
+  DEL_RULE_ACTION: '/ruleAction/del', // 权限行为删除
+  UPDATE_RULE_ACTION: '/ruleAction/update', // 权限行为修改
+  GET_RULE_ACTION: '/ruleAction/findAll', // 获取行为标识
+}
+
+/**
  * 栏目管理接口
  * @type {{MENU_LIST: string}}
  */
