@@ -19,6 +19,8 @@ import {Rule} from "../Rule/Rule";
 import {Home} from "../Home/Home";
 import {Column} from "../Column/Column";
 import {RuleAction} from "../RuleAction/RuleAction";
+import {NewsType} from "../NewsType/NewsType";
+import {FlinkType} from "../FlinkType/FlinkType";
 const { SubMenu } = Menu;
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -87,6 +89,8 @@ export class Layouts extends Component {
                 <Route exact path={`${path}/rule`} component={Rule} />
                 <Route exact path={`${path}/column`} component={Column} />
                 <Route exact path={`${path}/dataConfig/ruleAction`} component={RuleAction} />
+                <Route exact path={`${path}/dataConfig/newsType`} component={NewsType} />
+                <Route exact path={`${path}/dataConfig/flinkType`} component={FlinkType} />
               </Switch>
             </Content>
           </Layout>

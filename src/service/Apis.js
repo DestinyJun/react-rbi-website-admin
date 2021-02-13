@@ -45,3 +45,25 @@ export const ColumnApi = {
   UPDATE_COLUMN: '/column/update', // 权限修改
   GET_COLUMN_TREE: '/column/findTree', // 获取权限树
 }
+
+/**
+ *  新闻类型管理
+ * @type {{MENU_LIST: string}}
+ */
+export const NewsTypeApi = {
+  ADD_NEWS_TYPE: '/newsType/add', // 新闻类型添加
+  DEL_NEWS_TYPE: '/newsType/del', // 新闻类型删除
+  UPDATE_NEWS_TYPE: '/newsType/update', // 新闻类型修改
+  GET_NEWS_TYPE: '/newsType/findAll', // 新闻类型查询
+}
+
+/**
+ *  友情连接类型管理
+ * @type {{MENU_LIST: string}}
+ */
+export const FlinkTypeApi = {
+  ADD_FLINK_TYPE: '/flinkType/add', // 友情连接类型添加
+  DEL_FLINK_TYPE: '/flinkType/del', // 友情连接类型删除
+  UPDATE_FLINK_TYPE: '/flinkType/update', // 友情连接类型修改
+  GET_FLINK_TYPE: '/flinkType/findAll', // 友情连接类型查询
+}

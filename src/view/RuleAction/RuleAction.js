@@ -17,7 +17,7 @@ export class RuleAction extends Component {
       rule_action_list: [],
       rule_action_visible: false,
       rule_action_loading: false,
-      rule_action_action_id: null,
+      rule_action_id: null,
     };
     // 表单模型
     this.rule_action_formRef = React.createRef();
@@ -71,13 +71,13 @@ export class RuleAction extends Component {
   // 添加/修改
   ruleSave () {
     let url,data;
-    if (!this.state.rule_action_action_id) {
+    if (!this.state.rule_action_id) {
       url = RuleActionApi.ADD_RULE_ACTION;
       data = this.rule_action_formRef.current.getFieldsValue()
     } else {
       url = RuleActionApi.UPDATE_RULE_ACTION;
       data = this.rule_action_formRef.current.getFieldsValue();
-      data['id'] = this.state.rule_action_action_id;
+      data['id'] = this.state.rule_action_id;
     }
     post(url, data)
       .then(() => {
@@ -99,7 +99,7 @@ export class RuleAction extends Component {
   ruleUpdate(item) {
     this.setState({
       rule_action_visible: true,
-      rule_action_action_id: item.id,
+      rule_action_id: item.id,
     },() => {
       this.rule_action_formRef.current.setFieldsValue({
         action_name: item.action_name,
@@ -137,7 +137,6 @@ export class RuleAction extends Component {
               this.rule_action_formRef.current.resetFields();
               this.setState({
                 rule_action_visible: false,
-                rule_action_tree_name: '点击选择父级权限',
               })
             }}
             onOk={() => {
