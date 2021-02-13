@@ -36,8 +36,8 @@ export class FlinkType extends Component {
         render: (item) => {
           return(
             <Space size="middle">
-              <Button type={'primary'} style={{background: '#00E3CA',borderColor: '#00E3CA'}} onClick={this.ruleUpdate.bind(this,item)}>编辑</Button>
-              <Button type={'primary'} danger onClick={this.ruleDel.bind(this,item)}>删除</Button>
+              <Button type={'primary'} style={{background: '#00E3CA',borderColor: '#00E3CA'}} onClick={this.flinkTypeUpdate.bind(this,item)}>编辑</Button>
+              <Button type={'primary'} danger onClick={this.flinkTypeDel.bind(this,item)}>删除</Button>
             </Space>
           )
         },
@@ -52,10 +52,10 @@ export class FlinkType extends Component {
     };
   }
   componentDidMount() {
-    this.ruleInit();
+    this.flinkTypeInit();
   }
   // 初始化树结构
-  ruleInit() {
+  flinkTypeInit() {
     post(FlinkTypeApi.GET_FLINK_TYPE, {})
       .then(res => {
         this.setState({
@@ -65,7 +65,7 @@ export class FlinkType extends Component {
       })
   }
   // 添加/修改
-  ruleSave () {
+  flinkTypeSave () {
     let url,data;
     if (!this.state.flink_type_id) {
       url = FlinkTypeApi.ADD_FLINK_TYPE;
@@ -77,22 +77,22 @@ export class FlinkType extends Component {
     }
     post(url, data)
       .then(() => {
-        this.ruleInit();
+        this.flinkTypeInit();
       })
       .catch(err => {})
   }
   // 删除
-  ruleDel (item) {
+  flinkTypeDel (item) {
     if (window.confirm('确定要删除么?')) {
       post(FlinkTypeApi.DEL_FLINK_TYPE, {id: item.id})
         .then(() => {
-          this.ruleInit();
+          this.flinkTypeInit();
         })
         .catch(err => {})
     }
   }
   // 修改
-  ruleUpdate(item) {
+  flinkTypeUpdate(item) {
     this.setState({
       flink_type_visible: true,
       flink_type_id: item.id,
@@ -147,7 +147,7 @@ export class FlinkType extends Component {
               validateMessages={this.flink_type_validateMessages}
               labelCol={{span: 7}}
               wrapperCol={{span: 16}}
-              onFinish={this.ruleSave.bind(this)}
+              onFinish={this.flinkTypeSave.bind(this)}
               initialValues={{
                 flink_type: null
               }}

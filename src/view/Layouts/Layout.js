@@ -21,6 +21,7 @@ import {Column} from "../Column/Column";
 import {RuleAction} from "../RuleAction/RuleAction";
 import {NewsType} from "../NewsType/NewsType";
 import {FlinkType} from "../FlinkType/FlinkType";
+import {SourceType} from "../SourceType/SourceType";
 const { SubMenu } = Menu;
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -91,6 +92,7 @@ export class Layouts extends Component {
                 <Route exact path={`${path}/dataConfig/ruleAction`} component={RuleAction} />
                 <Route exact path={`${path}/dataConfig/newsType`} component={NewsType} />
                 <Route exact path={`${path}/dataConfig/flinkType`} component={FlinkType} />
+                <Route exact path={`${path}/dataConfig/sourceType`} component={SourceType} />
               </Switch>
             </Content>
           </Layout>

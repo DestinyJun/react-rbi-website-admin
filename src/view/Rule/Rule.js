@@ -193,7 +193,8 @@ export class Rule extends Component {
             >
               <Form.Item label="父级权限" >
                 <Button type="primary" onClick={() => {
-                  this.setState({rule_tree_visible: true},() => this.rule_formRef.current.resetFields());
+                  // this.setState({rule_tree_visible: true},() => this.rule_formRef.current.resetFields());
+                  this.setState({rule_tree_visible: true});
                 }}
                   style={{borderColor: '#D9D9D9',textAlign: 'left',color: '#262626',padding: '4px 10px'}} ghost block>
                   {

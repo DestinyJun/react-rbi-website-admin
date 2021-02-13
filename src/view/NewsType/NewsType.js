@@ -36,8 +36,8 @@ export class NewsType extends Component {
         render: (item) => {
           return(
             <Space size="middle">
-              <Button type={'primary'} style={{background: '#00E3CA',borderColor: '#00E3CA'}} onClick={this.ruleUpdate.bind(this,item)}>编辑</Button>
-              <Button type={'primary'} danger onClick={this.ruleDel.bind(this,item)}>删除</Button>
+              <Button type={'primary'} style={{background: '#00E3CA',borderColor: '#00E3CA'}} onClick={this.newsTypeUpdate.bind(this,item)}>编辑</Button>
+              <Button type={'primary'} danger onClick={this.newsTypeDel.bind(this,item)}>删除</Button>
             </Space>
           )
         },
@@ -52,10 +52,10 @@ export class NewsType extends Component {
     };
   }
   componentDidMount() {
-    this.ruleInit();
+    this.newsTypeInit();
   }
   // 初始化树结构
-  ruleInit() {
+  newsTypeInit() {
     post(NewsTypeApi.GET_NEWS_TYPE, {})
       .then(res => {
         this.setState({
@@ -65,7 +65,7 @@ export class NewsType extends Component {
       })
   }
   // 添加/修改
-  ruleSave () {
+  newsTypeSave () {
     let url,data;
     if (!this.state.news_type_id) {
       url = NewsTypeApi.ADD_NEWS_TYPE;
@@ -77,22 +77,22 @@ export class NewsType extends Component {
     }
     post(url, data)
       .then(() => {
-        this.ruleInit();
+        this.newsTypeInit();
       })
       .catch(err => {})
   }
   // 删除
-  ruleDel (item) {
+  newsTypeDel (item) {
     if (window.confirm('确定要删除么?')) {
       post(NewsTypeApi.DEL_NEWS_TYPE, {id: item.id})
         .then(() => {
-          this.ruleInit();
+          this.newsTypeInit();
         })
         .catch(err => {})
     }
   }
   // 修改
-  ruleUpdate(item) {
+  newsTypeUpdate(item) {
     this.setState({
       news_type_visible: true,
       news_type_id: item.id,
@@ -147,7 +147,7 @@ export class NewsType extends Component {
               validateMessages={this.news_type_validateMessages}
               labelCol={{span: 6}}
               wrapperCol={{span: 16}}
-              onFinish={this.ruleSave.bind(this)}
+              onFinish={this.newsTypeSave.bind(this)}
               initialValues={{
                 news_type: null
               }}

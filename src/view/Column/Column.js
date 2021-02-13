@@ -221,7 +221,7 @@ export class Column extends Component {
             >
               <Form.Item label="父级栏目" >
                 <Button type="primary" onClick={() => {
-                  this.setState({column_tree_visible: true},() => this.column_formRef.current.resetFields());
+                  this.setState({column_tree_visible: true});
                 }}
                         style={{borderColor: '#D9D9D9',textAlign: 'left',color: '#262626',padding: '4px 10px'}} ghost block>
                   {

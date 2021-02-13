@@ -67,3 +67,14 @@ export const FlinkTypeApi = {
   UPDATE_FLINK_TYPE: '/flinkType/update', // 友情连接类型修改
   GET_FLINK_TYPE: '/flinkType/findAll', // 友情连接类型查询
 }
+
+/**
+ *  资源类型管理
+ * @type {{MENU_LIST: string}}
+ */
+export const SourceTypeApi = {
+  ADD_SOURCE_TYPE: '/sourceType/add', // 资源类型类型添加
+  DEL_SOURCE_TYPE: '/sourceType/del', // 资源类型类型删除
+  UPDATE_SOURCE_TYPE: '/sourceType/update', // 资源类型类型修改
+  GET_SOURCE_TYPE: '/sourceType/findAll', // 资源类型类型查询
+}

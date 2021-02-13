@@ -40,8 +40,8 @@ export class RuleAction extends Component {
         render: (item) => {
           return(
             <Space size="middle">
-              <Button type={'primary'} style={{background: '#00E3CA',borderColor: '#00E3CA'}} onClick={this.ruleUpdate.bind(this,item)}>编辑</Button>
-              <Button type={'primary'} danger onClick={this.ruleDel.bind(this,item)}>删除</Button>
+              <Button type={'primary'} style={{background: '#00E3CA',borderColor: '#00E3CA'}} onClick={this.ruleActionUpdate.bind(this,item)}>编辑</Button>
+              <Button type={'primary'} danger onClick={this.ruleActionDel.bind(this,item)}>删除</Button>
             </Space>
           )
         },
@@ -56,10 +56,10 @@ export class RuleAction extends Component {
     };
   }
   componentDidMount() {
-    this.ruleInit();
+    this.ruleActionInit();
   }
   // 初始化树结构
-  ruleInit() {
+  ruleActionInit() {
     post(RuleActionApi.GET_RULE_ACTION, {})
       .then(res => {
         this.setState({
@@ -69,7 +69,7 @@ export class RuleAction extends Component {
       })
   }
   // 添加/修改
-  ruleSave () {
+  ruleActionSave () {
     let url,data;
     if (!this.state.rule_action_id) {
       url = RuleActionApi.ADD_RULE_ACTION;
@@ -81,22 +81,22 @@ export class RuleAction extends Component {
     }
     post(url, data)
       .then(() => {
-        this.ruleInit();
+        this.ruleActionInit();
       })
       .catch(err => {})
   }
   // 删除
-  ruleDel (item) {
+  ruleActionDel (item) {
     if (window.confirm('确定要删除么?')) {
       post(RuleActionApi.DEL_RULE_ACTION, {id: item.id})
         .then(() => {
-          this.ruleInit();
+          this.ruleActionInit();
         })
         .catch(err => {})
     }
   }
   // 修改
-  ruleUpdate(item) {
+  ruleActionUpdate(item) {
     this.setState({
       rule_action_visible: true,
       rule_action_id: item.id,
@@ -152,7 +152,7 @@ export class RuleAction extends Component {
               validateMessages={this.rule_action_validateMessages}
               labelCol={{span: 6}}
               wrapperCol={{span: 16}}
-              onFinish={this.ruleSave.bind(this)}
+              onFinish={this.ruleActionSave.bind(this)}
               initialValues={{
                 action_name: null,
                 action_code: null,
