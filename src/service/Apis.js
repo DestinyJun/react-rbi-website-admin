@@ -78,3 +78,14 @@ export const SourceTypeApi = {
   UPDATE_SOURCE_TYPE: '/sourceType/update', // 资源类型类型修改
   GET_SOURCE_TYPE: '/sourceType/findAll', // 资源类型类型查询
 }
+
+/**
+ *  资源类型管理
+ * @type {{MENU_LIST: string}}
+ */
+export const NewsApi = {
+  ADD_NEWS: '/news/add', // 资源类型类型添加
+  DEL_NEWS: '/news/del', // 资源类型类型删除
+  UPDATE_NEWS: '/news/update', // 资源类型类型修改
+  GET_NEWS: '/news/findAll', // 资源类型类型查询
+}
