@@ -18,6 +18,11 @@ import {LayoutApi} from "../../service/Apis";
 import {Rule} from "../Rule/Rule";
 import {Home} from "../Home/Home";
 import {Column} from "../Column/Column";
+import {RuleAction} from "../RuleAction/RuleAction";
+import {NewsType} from "../NewsType/NewsType";
+import {FlinkType} from "../FlinkType/FlinkType";
+import {SourceType} from "../SourceType/SourceType";
+import {News} from "../News/News";
 const { SubMenu } = Menu;
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -32,8 +37,6 @@ export class Layouts extends Component {
   render() {
     const {path, url} = this.props.match;
     const {pathname} = this.props.location;
-    console.log(path,url);
-    console.log(pathname);
     return (
       <Layout>
         <Header className="header">
@@ -56,6 +59,9 @@ export class Layouts extends Component {
               defaultOpenKeys={['sub1']}
               style={{ height: '100%', borderRight: 0 }}
             >
+              <Menu.Item icon={<UserOutlined />}>
+                <Link to={`${url}`}>系统首页</Link>
+              </Menu.Item>
               {
                 this.state.layMenuList.length>0 && this.state.layMenuList.map((item,index) => {
                   if ('children' in item) {
@@ -85,6 +91,11 @@ export class Layouts extends Component {
                 <Route exact path={path} component={Home} />
                 <Route exact path={`${path}/rule`} component={Rule} />
                 <Route exact path={`${path}/column`} component={Column} />
+                <Route exact path={`${path}/dataConfig/ruleAction`} component={RuleAction} />
+                <Route exact path={`${path}/dataConfig/newsType`} component={NewsType} />
+                <Route exact path={`${path}/dataConfig/flinkType`} component={FlinkType} />
+                <Route exact path={`${path}/dataConfig/sourceType`} component={SourceType} />
+                <Route exact path={`${path}/news`} component={News} />
               </Switch>
             </Content>
           </Layout>

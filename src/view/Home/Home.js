@@ -16,7 +16,7 @@ export class Home extends Component {
     return (
       <div className="home">
         <div className="sidebar-left">
-          <span>我送是</span>
+          <span>home</span>
         </div>
       </div>
     );
