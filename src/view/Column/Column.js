@@ -249,7 +249,6 @@ export class Column extends Component {
               <Form.Item label="图片上传" hidden={!this.state.column_has_img}>
                 <Uploads ref={this.column_uploadRef} max={3} defaultFileList={this.state.column_default_img} onChange={(files) => {
                   this.column_files = [...files];
-                  console.log(this.column_files);
                 }} />
               </Form.Item>
               <Form.Item label="当前图片" hidden={!this.state.column_default_img.length>0}>

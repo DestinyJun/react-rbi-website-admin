@@ -40,10 +40,10 @@ export const RuleActionApi = {
  * @type {{MENU_LIST: string}}
  */
 export const ColumnApi = {
-  ADD_COLUMN: '/column/add', // 权限添加
-  DEL_COLUMN: '/column/del', // 权限删除
-  UPDATE_COLUMN: '/column/update', // 权限修改
-  GET_COLUMN_TREE: '/column/findTree', // 获取权限树
+  ADD_COLUMN: '/column/add', // 栏目添加
+  DEL_COLUMN: '/column/del', // 栏目删除
+  UPDATE_COLUMN: '/column/update', // 栏目修改
+  GET_COLUMN_TREE: '/column/findTree', // 获取栏目树
 }
 
 /**
@@ -80,12 +80,15 @@ export const SourceTypeApi = {
 }
 
 /**
- *  资源类型管理
+ *  新闻管理
  * @type {{MENU_LIST: string}}
  */
 export const NewsApi = {
-  ADD_NEWS: '/news/add', // 资源类型类型添加
-  DEL_NEWS: '/news/del', // 资源类型类型删除
-  UPDATE_NEWS: '/news/update', // 资源类型类型修改
-  GET_NEWS: '/news/findAll', // 资源类型类型查询
+  ADD_NEWS: '/news/add', // 新闻添加
+  DEL_NEWS: '/news/del', // 新闻删除
+  UPDATE_NEWS: '/news/update', // 新闻修改
+  GET_NEWS: '/news/findAll', // 新闻查询
+  GET_SOURCE_TYPE: '/sourceType/findAll', // 资源类型类型查询
+  GET_COLUMN_TREE: '/column/findTree', // 获取栏目树
+  GET_NEWS_TYPE: '/newsType/findAll', // 新闻类型查询
 }
