@@ -80,6 +80,16 @@ export const SourceTypeApi = {
 }
 
 /**
+ *  资源管理
+ * @type {{MENU_LIST: string}}
+ */
+export const SourceApi = {
+  ADD_SOURCE_TYPE: '/source/upload', // 资源添加
+  DEL_SOURCE_TYPE: '/source/del', // 资源删除
+  GET_SOURCE_TYPE: '/source/findAll', // 资源查询
+}
+
+/**
  *  新闻管理
  * @type {{MENU_LIST: string}}
  */
@@ -88,7 +98,7 @@ export const NewsApi = {
   DEL_NEWS: '/news/del', // 新闻删除
   UPDATE_NEWS: '/news/update', // 新闻修改
   GET_NEWS: '/news/findAll', // 新闻查询
-  GET_SOURCE_TYPE: '/sourceType/findAll', // 资源类型类型查询
+  GET_SOURCE: '/source/findAll', // 资源列表查询
   GET_COLUMN_TREE: '/column/findTree', // 获取栏目树
   GET_NEWS_TYPE: '/newsType/findAll', // 新闻类型查询
 }

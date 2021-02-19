@@ -38,7 +38,6 @@ export class News extends Component {
     this.state = {
       news_list: [],
       news_thumb_img: [], // 新闻默认封面图片
-      news_source_list: [],
       news_type_list: [],
       news_column_list: [],
       news_column_name: '点击选择栏目',
@@ -58,26 +57,26 @@ export class News extends Component {
       },
     };
   }
+
+  // 生命周期
   componentDidMount() {
-    // this.newsInit(1,'');
     axios.all([
-      post(NewsApi.GET_NEWS, {pageSize: '10',pageNo: 1,name: ''}),
-      post(NewsApi.GET_SOURCE_TYPE, {}),
+      post(NewsApi.GET_NEWS, {pageSize: 10,pageNo: 1,name: ''}),
       post(NewsApi.GET_COLUMN_TREE, {}),
       post(NewsApi.GET_NEWS_TYPE, {}),
     ])
       .then(res => {
         this.setState({
           news_list: res[0].data.map(item =>({...item,key: item.id})), // 新闻列表
-          news_source_list: res[1].data.map(item =>({...item,key: item.id})), // 资源列表
-          news_column_list: transformTree(reverseTree(res[2].data).map(item => ({...item,key: item.id}))), // 栏目列表
-          news_type_list: res[3].data.map(item =>({...item,key: item.id})), // 新闻类型列表
+          news_column_list: transformTree(reverseTree(res[1].data).map(item => ({...item,key: item.id}))), // 栏目列表
+          news_type_list: res[2].data.map(item =>({...item,key: item.id})), // 新闻类型列表
         })
       })
       .catch(err => {
         console.log(err);
       })
   }
+
   // 数据初始化
   newsInit(pageNo,name) {
     post(NewsApi.GET_NEWS, {pageSize: '10',pageNo,name})
@@ -209,8 +208,10 @@ export class News extends Component {
              <TextEditor />
              <Form
                ref={this.news_formRef}
+               name={'newsForm'}
                validateMessages={this.news_validateMessages}
                onFinish={this.newsSave.bind(this)}
+               layout="vertical"
                initialValues={{
                  article_title: null,
                  article_summary: null,
@@ -218,7 +219,6 @@ export class News extends Component {
                  article_type_id: null,
                  article_author: '红鸟智能',
                }}
-               layout="vertical"
              >
                <Row gutter={16}>
                  <Col span={12}>

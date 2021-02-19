@@ -4,22 +4,62 @@
  * date：  2020/4/21 17:01
  */
 import React, {Component} from 'react';
-// 引入axios
-import http from 'axios';
 // 引入编辑器组件
 import BraftEditor from 'braft-editor'
+import { ContentUtils } from 'braft-utils'
 // 引入编辑器组件样式
 import './TextEditor.scss';
+import {post} from "../service/Interceptor";
+import {Col, Form, message, Modal, Row, Select} from "antd";
+import {ModalHeader} from "./ModalHeader";
+import {Uploads} from "./Uploads";
+import {NewsApi, SourceApi, SourceTypeApi} from "../service/Apis";
+const { Option } = Select;
 
 export class TextEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
       // 创建一个空的editorState作为初始值
-      editorState: BraftEditor.createEditorState(null)
+      editorState: BraftEditor.createEditorState(null),
+      upload_visible: false,
+      file_type_list: [],
+      source_list: [],
     };
+    // 表单模型
+    this.formRef = React.createRef();
+    // 校验信息定义
+    this.validateMessages = {
+      required: '${label}是必填项!'
+    };
+    // 文件上传节点
+    this.uploadRef = React.createRef();
+    // 上传文件列表
+    this.files = []
+    // 插入的资源文件列表
+    this.source_url = []
+    // 编辑器节点
+    this.braftFinder = React.createRef()
   }
-  async componentDidMount () {
+  getImageArr() {
+    // console.log(this.braftFinder.getSelectedItems());
+  }
+  // 生命周期
+  componentDidMount () {
+    // 获取媒体库实例
+    // this.braftFinder = this.editorInstance.getFinderInstance()
+    // 初始化媒体类型
+    post(SourceTypeApi.GET_SOURCE_TYPE,{})
+      .then(res => {
+        this.setState({
+          file_type_list: res.data.map(item =>({...item,key: item.id})), // 媒体文件类型列表
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    // 媒体文件初始化
+    this.mediaInit(10,1)
     // 假设此处从服务端获取html格式的编辑器内容
     // const htmlContent = await fetchEditorContent()
     // 使用BraftEditor.createEditorState将html字符串转换为编辑器需要的editorStat
@@ -28,6 +68,14 @@ export class TextEditor extends Component {
     })*/
   }
 
+  // 媒体文件初始化
+  mediaInit(pageSize, pageNo) {
+    post(NewsApi.GET_SOURCE, {pageSize,pageNo})
+      .then(res => {
+        this.braftFinder.current.braftFinder.setItems(res.data.map(item =>({...item,key: item.id})))
+      })
+  }
+  // 保存编辑器内容
   submitContent = async () => {
     // 在编辑器获得焦点时按下ctrl+s会执行此方法
     // 编辑器内容提交到服务端之前，可直接调用editorState.toHTML()来获取HTML格式的内容
@@ -35,93 +83,118 @@ export class TextEditor extends Component {
     console.log(htmlContent);
     // const result = await saveEditorContent(htmlContent)
   }
+
+  // 编辑器内容改变时执行
   handleEditorChange = (editorState) => {
     this.setState({ editorState })
+    this.getImageArr();
   }
 
-  // 多媒体文件校验（校验只允许上传图片）
-  myValidateFn(files) {
-    // 返回false时则自动上传函数uploadFn不执行，不过其功能跟accepts重叠了，感觉
-    const types = ['image/png','image/jpeg','image/gif','image/webp','image/apng'];
-    return  types.includes(files.type);
-  }
   // 多媒体文件上传
   imageUpload(params) {
-    console.log(params);
-    return
+    if(this.files.length === 0) {
+      message.error('请选择需要上传的图片！')
+      return;
+    }
     const data = new FormData;
-    data.append('file',params.file);
-    http.post(
-      'http://127.0.01:8090/admin/source/upload',
-      data,
-      {
-        headers: {
-          token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIhQCMkJSomIiwiYXVkIjoiIiwiaWF0IjoxNjA5MzIxNDMxLCJuYmYiOjE2MDkzMjE0MzQsImV4cCI6MTYxOTMyMTQzMSwiZGF0YSI6eyJ1aWQiOjEsInVpcCI6IjEyNy4wLjAuMSJ9fQ.thxpFMKoMEaMhx6p4mN-gDb-nfVwEmsSkFGUuz_9riY'
-        }
-      }
-    )
-      .then(res => {
-       /* if (res.data.status === 2000) {
-          successFn(res.data)
-        }*/
-        console.log(res);
+    data.append('source_type_id',params.source_type_id);
+    this.files.forEach(item => {
+      data.append('source',item.originFileObj);
+    })
+    post(SourceApi.ADD_SOURCE_TYPE, data)
+      .then(() => {
+        this.mediaInit(10,1)
+        this.setState({upload_visible: false})
       })
       .catch(err => {
         console.log(err);
       })
-    // 上传成功后执行这个函数
-    const successFn = (response) => {
-      // 假设服务端直接返回文件上传后的地址
-      // 上传成功后调用param.success并传入上传后的文件地址
-      params.success({
-        url: response.data,
-      })
-    }
-    // 上传进度改变执行这个函数
-    const progressFn = (event) => {
-      // 上传进度发生变化时调用param.progress
-      params.progress(event.loaded / event.total * 100)
-    }
-    // 上传失败后执行这个函数
-    const errorFn = (response) => {
-      // 上传发生错误时调用param.error
-      params.error({
-        msg: 'unable to upload.'
-      })
-    }
   }
 
   render() {
     const { editorState } = this.state
+    const extendControls = [
+      'separator',
+      {
+        key: 'add-media',
+        type: 'button',
+        text: '上传图片到媒体库',
+        onClick:() => {
+          // console.log(this.braftFinder.current);
+          const str = this.braftFinder.current.getValue().toHTML();
+          console.log(str);
+          const rex = /\/\/.+\.(jpg|gif|png)/g;
+          console.log(str.match(rex));
+          // console.log(this.braftFinder.current.getValue().toHTML());
+        }
+      },
+    ]
     return (
       <div className="my-component">
         <BraftEditor
-          media={{
-            pasteImage: false,
-            uploadFn: this.imageUpload.bind(this),
-            validateFn: this.myValidateFn.bind(this),
-            accepts: {
-              image: 'image/png,image/jpeg,image/gif,image/webp,image/apng',
-            }
-          }}
-          extendControls={[
-            'separator',
-            {
-              key: 'my-button', // 控件唯一标识，必传
-              type: 'button',
-              title: '这是一个自定义的按钮', // 指定鼠标悬停提示文案
-              className: 'my-button', // 指定按钮的样式名
-              html: null, // 指定在按钮中渲染的html字符串
-              text: '自定义按钮', // 指定按钮文字，此处可传入jsx，若已指定html，则text不会显示
-              onClick: () => {
-                console.log('Hello World!');
-              },
-            }
-          ]}
+          // ref={instance => this.editorInstance = instance}
+          ref={this.braftFinder}
           value={editorState}
+          extendControls={extendControls}
           onChange={this.handleEditorChange}
           onSave={this.submitContent}
+          media={{
+            pasteImage: false
+          }}
         />
+        <Modal
+          title={<ModalHeader title={'媒体文件上传'} />}
+          closable={false}
+          visible={this.state.upload_visible}
+          centered
+          okText={'确认'}
+          afterClose={() => {
+            this.uploadRef.current.handleReset();
+            this.formRef.current.resetFields();
+            this.setState({
+              upload_visible: false,
+            })
+          }}
+          onOk={() => {
+            this.formRef.current.submit()
+          }}
+          confirmLoading={false}
+          cancelText={'取消'}
+          onCancel={() => this.setState({upload_visible: false})}
+        >
+          <Form
+            ref={this.formRef}
+            name={'textEditForm'}
+            validateMessages={this.validateMessages}
+            layout="vertical"
+            onFinish={this.imageUpload.bind(this)}
+            initialValues={{
+              source_type_id: null
+            }}
+          >
+            <Row>
+              <Col span={24}>
+                <Form.Item label="权限标识" name="source_type_id" rules={[{required: true}]}>
+                  <Select placeholder={'请选择媒体文件类型'} notFoundContent={<span>暂无内容</span>}>
+                    {
+                      this.state.file_type_list.length > 0 &&
+                      this.state.file_type_list.map((item,index) => (<Option key={`rule_${index}`} value={item.id}>{item.type_name}</Option>))
+                    }
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <div>
+                  <span style={{color: 'red'}}>*</span>
+                  <span style={{marginLeft: 5}}>选择媒体文件</span>
+                  <Uploads ref={this.uploadRef} max={8} onChange={(files) => {
+                    this.files = [...files];
+                  }} />
+                </div>
+              </Col>
+            </Row>
+          </Form>
+        </Modal>
       </div>
     );
   }
