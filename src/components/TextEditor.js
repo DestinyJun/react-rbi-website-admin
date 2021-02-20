@@ -39,23 +39,6 @@ export class TextEditor extends Component {
     this.braftFinder = React.createRef()
   }
 
-  // 获取编辑器内容及已插入的图片地址
-  getEditorContent() {
-    const str = this.braftFinder.current.getValue().toHTML();
-    const imgRex = /<img.*?(?:>|\/>)/gi;
-    const imgSrcRex = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
-    const arr = str.match(imgRex)
-    const arrUrl = []
-    if (arr) {
-      for (var i = 0; i < arr.length; i++) {
-        arrUrl.push(arr[i].match(imgSrcRex)[1])
-      }
-    }
-    return {
-      article_content: str,
-      source_url: arrUrl
-    }
-  }
   // 生命周期
   componentDidMount () {
     // 获取媒体库实例
@@ -93,7 +76,6 @@ export class TextEditor extends Component {
     // 在编辑器获得焦点时按下ctrl+s会执行此方法
     // 编辑器内容提交到服务端之前，可直接调用editorState.toHTML()来获取HTML格式的内容
     const htmlContent = this.state.editorState.toHTML()
-    console.log(htmlContent);
     // const result = await saveEditorContent(htmlContent)
   }
 
@@ -121,6 +103,34 @@ export class TextEditor extends Component {
       .catch(err => {
         console.log(err);
       })
+  }
+
+  // 获取编辑器内容及已插入的图片地址
+  getEditorContent() {
+    const str = this.braftFinder.current.getValue().toHTML();
+    const imgRex = /<img.*?(?:>|\/>)/gi;
+    const imgSrcRex = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+    const arr = str.match(imgRex)
+    const arrUrl = []
+    if (arr) {
+      for (var i = 0; i < arr.length; i++) {
+        arrUrl.push(arr[i].match(imgSrcRex)[1])
+      }
+    }
+    return {
+      article_content: str,
+      source_url: arrUrl
+    }
+  }
+
+  // 编辑器内容指控
+  handleReset() {
+    this.setState({editorState: BraftEditor.createEditorState(null)})
+  }
+
+  // 编辑器重新赋值
+  setEditorValue(content) {
+    this.setState({editorState: BraftEditor.createEditorState(content)})
   }
 
   render() {

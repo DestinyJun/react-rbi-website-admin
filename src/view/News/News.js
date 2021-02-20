@@ -41,8 +41,13 @@ export class News extends Component {
       news_column_list: [],
       news_column_name: '点击选择栏目',
       news_column_visible: false,
+      news_list_visible: false,
       news_id: null,
+      news_keyword: '', // 搜索关键字
+      news_pageNo: 1, // 当前页
+      news_content: null, // 新闻内容
     };
+    // 每页显示条数
     // 文件列表
     this.news_files = [];
     // 表单模型
@@ -62,16 +67,17 @@ export class News extends Component {
 
   // 生命周期
   componentDidMount() {
+    // 初始化新闻列表
+    this.newsInit(this.state.news_pageNo,this.state.news_keyword);
+    // 初始化选项
     axios.all([
-      post(NewsApi.GET_NEWS, {pageSize: 10,pageNo: 1,name: ''}),
       post(NewsApi.GET_COLUMN_TREE, {}),
       post(NewsApi.GET_NEWS_TYPE, {}),
     ])
       .then(res => {
         this.setState({
-          news_list: res[0].data.map(item =>({...item,key: item.id})), // 新闻列表
-          news_column_list: transformTree(reverseTree(res[1].data).map(item => ({...item,key: item.id}))), // 栏目列表
-          news_type_list: res[2].data.map(item =>({...item,key: item.id})), // 新闻类型列表
+          news_column_list: transformTree(reverseTree(res[0].data).map(item => ({...item,key: item.id}))), // 栏目列表
+          news_type_list: res[1].data.map(item =>({...item,key: item.id})), // 新闻类型列表
         })
       })
       .catch(err => {
@@ -81,9 +87,8 @@ export class News extends Component {
 
   // 新闻数据初始化
   newsInit(pageNo,name) {
-    post(NewsApi.GET_NEWS, {pageSize: '10',pageNo,name})
+    post(NewsApi.GET_NEWS, {pageSize: 10,pageNo,name})
       .then(res => {
-        console.log(res);
         this.setState({
           news_list: res.data.map(item =>({...item,key: item.id})),
         })
@@ -125,7 +130,42 @@ export class News extends Component {
         this.setState({
           news_list_visible: false,
         });
-        this.newsInit();
+        this.newsInit(this.state.news_pageNo,this.state.news_keyword);
+      })
+      .catch(err => {})
+  }
+
+  //删除
+  newsDel(id) {
+    if (window.confirm('确定删除吗？')) {
+      post(NewsApi.DEL_NEWS, {id})
+        .then(() => {
+          this.newsInit(this.state.news_pageNo,this.state.news_keyword);
+        })
+        .catch(err => {})
+    }
+  }
+
+  // 编辑初始化
+  newsUpdate(item) {
+    post(NewsApi.GET_NEWS_CONTENT, {id: item.id})
+      .then((res) => {
+        this.setState({
+          news_id: item.id,
+          news_content: res.article_content,
+          news_list_visible: true,
+          news_column_name: item.column_name,
+          news_thumb_img: [item.thumb_img],
+        },() => {
+          this.news_formRef.current.setFieldsValue({
+            article_title: item.article_title,
+            article_summary: item.article_summary,
+            article_author: item.article_author,
+            article_column_id: item.article_column_id,
+            article_type_id: item.article_type_id,
+          })
+          this.news_editorRef.current.setEditorValue(res.article_content)
+        })
       })
       .catch(err => {})
   }
@@ -164,10 +204,10 @@ export class News extends Component {
                       <EyeOutlined key="预览"/>
                     </Popover>,
                     <Popover content={'编辑'}>
-                      <EditOutlined key="编辑"/>
+                      <EditOutlined key="编辑" onClick={this.newsUpdate.bind(this,item)} />
                     </Popover>,
-                    <Popover content={'删除'} >
-                      <DeleteOutlined color={'red'} key="删除" style={{color: '#ff4d4f'}} />
+                    <Popover content={'删除'}>
+                      <DeleteOutlined color={'red'} onClick={this.newsDel.bind(this,item.id)}  key="删除" style={{color: '#ff4d4f'}} />
                     </Popover>
                   ]}
                 >
@@ -184,7 +224,7 @@ export class News extends Component {
             }
           </Row>
         </div>
-        <div>
+        <div className={'new-drawer'}>
           <Drawer
             title="添加新闻"
             width={'45vw'}
@@ -192,9 +232,11 @@ export class News extends Component {
               if (!event) {
                 this.news_formRef.current.resetFields();
                 this.news_uploadRef.current.handleReset();
+                this.news_editorRef.current.handleReset();
                 this.setState({
                   news_column_name: '点击选择栏目',
-                  news_thumb_img: []
+                  news_thumb_img: [],
+                  news_id: null,
                 })
               }
             }}
@@ -206,11 +248,7 @@ export class News extends Component {
             visible={this.state.news_list_visible}
             bodyStyle={{ paddingBottom: 24 }}
             footer={
-              <div
-                style={{
-                  textAlign: 'right',
-                }}
-              >
+              <div style={{textAlign: 'right',}}>
                 <Button onClick={() => {
                   this.setState({
                     news_list_visible: false,
@@ -299,10 +337,10 @@ export class News extends Component {
                    </div>
                  </Col>
                  <Col span={12}>
-                   <Form.Item label="当前图片" hidden={!this.state.news_thumb_img.length>0}>
+                   <Form.Item label="当前封面图片" hidden={!this.state.news_thumb_img.length>0}>
                      {
                        this.state.news_thumb_img.map((item,index) =>(<
-                         Image key={`column_image_${index}`} style={{paddingRight: '5px'}} preview={{mask: <EyeOutlined />}} src={item.url} width={120} />))
+                         Image key={`column_image_${index}`} style={{paddingRight: '5px'}} preview={{mask: <EyeOutlined />}} src={item} width={120} />))
                      }
                      <p style={{color: "#FF4D4F"}}>注意：一但上传新图片，原有的图片将会被删除</p>
                    </Form.Item>

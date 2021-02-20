@@ -101,4 +101,5 @@ export const NewsApi = {
   GET_SOURCE: '/source/findAll', // 资源列表查询
   GET_COLUMN_TREE: '/column/findTree', // 获取栏目树
   GET_NEWS_TYPE: '/newsType/findAll', // 新闻类型查询
+  GET_NEWS_CONTENT: '/news/find', // 新闻内容查询
 }
