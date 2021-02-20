@@ -17,13 +17,12 @@ import {
   Popover,
   Row,
   Select,
-  DatePicker,
   Modal,
   Tree,
   InputNumber
 } from "antd";
 import {post} from "../../service/Interceptor";
-import {NewsApi, RuleApi} from "../../service/Apis";
+import {NewsApi} from "../../service/Apis";
 import axios from "axios";
 import {reverseTree, transformTree} from "../../service/tools";
 import {ModalHeader} from "../../components/ModalHeader";
@@ -42,6 +41,7 @@ export class News extends Component {
       news_column_list: [],
       news_column_name: '点击选择栏目',
       news_column_visible: false,
+      news_id: null,
     };
     // 文件列表
     this.news_files = [];
@@ -56,6 +56,8 @@ export class News extends Component {
         number: '${label}必须是数字',
       },
     };
+    // 文本编辑器节点
+    this.news_editorRef = React.createRef();
   }
 
   // 生命周期
@@ -77,7 +79,7 @@ export class News extends Component {
       })
   }
 
-  // 数据初始化
+  // 新闻数据初始化
   newsInit(pageNo,name) {
     post(NewsApi.GET_NEWS, {pageSize: '10',pageNo,name})
       .then(res => {
@@ -91,17 +93,39 @@ export class News extends Component {
   // 添加/修改
   newsSave () {
     let url,data;
-    if (!this.state.rule_id) {
-      url = RuleApi.ADD_RULE;
-      data = this.rule_formRef.current.getFieldsValue()
+    if (!this.state.news_id) {
+      url = NewsApi.ADD_NEWS;
+      data = this.news_formRef.current.getFieldsValue()
     } else {
-      url = RuleApi.UPDATE_RULE;
-      data = this.rule_formRef.current.getFieldsValue();
-      data['id'] = this.state.rule_id;
+      url = NewsApi.UPDATE_NEWS;
+      data = this.news_formRef.current.getFieldsValue();
+      data['id'] = this.state.news_id;
     }
-    post(url, data)
+    data = {...data,...this.news_editorRef.current.getEditorContent()}
+    const formData = new FormData;
+    for (let key in data) {
+      if (data.hasOwnProperty(key)) {
+        if (!data[key]){
+          continue
+        }
+        if (Array.isArray(data[key])) {
+          formData.append('source_url', JSON.stringify(data[key]))
+        } else {
+          formData.append(key, data[key])
+        }
+      }
+    }
+    if (this.news_files.length>0) {
+      this.news_files.forEach(item => {
+        formData.append('thumb_img', item.originFileObj)
+      })
+    }
+    post(url, formData)
       .then(() => {
-        this.ruleInit();
+        this.setState({
+          news_list_visible: false,
+        });
+        this.newsInit();
       })
       .catch(err => {})
   }
@@ -194,18 +218,14 @@ export class News extends Component {
                 }} style={{ marginRight: 8 }}>
                   取消
                 </Button>
-                <Button onClick={() => {
-                  this.setState({
-                    news_list_visible: false,
-                  });
-                }} type="primary">
+                <Button onClick={() => {this.news_formRef.current.submit()}} type="primary">
                   添加
                 </Button>
               </div>
             }
           >
            <div className={'news-drawer'}>
-             <TextEditor />
+             <TextEditor ref={this.news_editorRef} />
              <Form
                ref={this.news_formRef}
                name={'newsForm'}

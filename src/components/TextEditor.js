@@ -6,7 +6,6 @@
 import React, {Component} from 'react';
 // 引入编辑器组件
 import BraftEditor from 'braft-editor'
-import { ContentUtils } from 'braft-utils'
 // 引入编辑器组件样式
 import './TextEditor.scss';
 import {post} from "../service/Interceptor";
@@ -36,13 +35,26 @@ export class TextEditor extends Component {
     this.uploadRef = React.createRef();
     // 上传文件列表
     this.files = []
-    // 插入的资源文件列表
-    this.source_url = []
     // 编辑器节点
     this.braftFinder = React.createRef()
   }
-  getImageArr() {
-    // console.log(this.braftFinder.getSelectedItems());
+
+  // 获取编辑器内容及已插入的图片地址
+  getEditorContent() {
+    const str = this.braftFinder.current.getValue().toHTML();
+    const imgRex = /<img.*?(?:>|\/>)/gi;
+    const imgSrcRex = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+    const arr = str.match(imgRex)
+    const arrUrl = []
+    if (arr) {
+      for (var i = 0; i < arr.length; i++) {
+        arrUrl.push(arr[i].match(imgSrcRex)[1])
+      }
+    }
+    return {
+      article_content: str,
+      source_url: arrUrl
+    }
   }
   // 生命周期
   componentDidMount () {
@@ -75,6 +87,7 @@ export class TextEditor extends Component {
         this.braftFinder.current.braftFinder.setItems(res.data.map(item =>({...item,key: item.id})))
       })
   }
+
   // 保存编辑器内容
   submitContent = async () => {
     // 在编辑器获得焦点时按下ctrl+s会执行此方法
@@ -87,7 +100,6 @@ export class TextEditor extends Component {
   // 编辑器内容改变时执行
   handleEditorChange = (editorState) => {
     this.setState({ editorState })
-    this.getImageArr();
   }
 
   // 多媒体文件上传
@@ -119,20 +131,12 @@ export class TextEditor extends Component {
         key: 'add-media',
         type: 'button',
         text: '上传图片到媒体库',
-        onClick:() => {
-          // console.log(this.braftFinder.current);
-          const str = this.braftFinder.current.getValue().toHTML();
-          console.log(str);
-          const rex = /\/\/.+\.(jpg|gif|png)/g;
-          console.log(str.match(rex));
-          // console.log(this.braftFinder.current.getValue().toHTML());
-        }
-      },
+        onClick:() => {this.setState({upload_visible: true})}
+      }
     ]
     return (
       <div className="my-component">
         <BraftEditor
-          // ref={instance => this.editorInstance = instance}
           ref={this.braftFinder}
           value={editorState}
           extendControls={extendControls}
