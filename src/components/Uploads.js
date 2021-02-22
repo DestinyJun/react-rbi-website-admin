@@ -12,6 +12,7 @@ export class Uploads extends Component {
   static defaultProps = {
     multiple: false, // 是否上传多张图片，默认false
     max: 1, // 最大上传数量
+    accept: 'image/*', // 最大上传数量
   }
 
   constructor(props) {

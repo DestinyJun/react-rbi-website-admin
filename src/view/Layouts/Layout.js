@@ -23,6 +23,9 @@ import {NewsType} from "../NewsType/NewsType";
 import {FlinkType} from "../FlinkType/FlinkType";
 import {SourceType} from "../SourceType/SourceType";
 import {News} from "../News/News";
+import {Source} from "../Source/Source";
+import {Flink} from "../Flink/Flink";
+import {Carousel} from "../Carousel/Carousel";
 const { SubMenu } = Menu;
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -96,6 +99,9 @@ export class Layouts extends Component {
                 <Route exact path={`${path}/dataConfig/flinkType`} component={FlinkType} />
                 <Route exact path={`${path}/dataConfig/sourceType`} component={SourceType} />
                 <Route exact path={`${path}/news`} component={News} />
+                <Route exact path={`${path}/source`} component={Source} />
+                <Route exact path={`${path}/flink`} component={Flink} />
+                <Route exact path={`${path}/carousel`} component={Carousel} />
               </Switch>
             </Content>
           </Layout>

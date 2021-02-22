@@ -84,9 +84,11 @@ export const SourceTypeApi = {
  * @type {{MENU_LIST: string}}
  */
 export const SourceApi = {
-  ADD_SOURCE_TYPE: '/source/upload', // 资源添加
-  DEL_SOURCE_TYPE: '/source/del', // 资源删除
-  GET_SOURCE_TYPE: '/source/findAll', // 资源查询
+  ADD_SOURCE: '/source/upload', // 资源添加
+  DEL_SOURCE: '/source/del', // 资源删除【根据URL删除】
+  DEL_ID_SOURCE: '/source/delById', // 资源删除【根据ID删除】
+  GET_SOURCE: '/source/findAll', // 资源查询
+  GET_SOURCE_TYPE: '/sourceType/findAll', // 资源类型查询
 }
 
 /**
@@ -103,3 +105,27 @@ export const NewsApi = {
   GET_NEWS_TYPE: '/newsType/findAll', // 新闻类型查询
   GET_NEWS_CONTENT: '/news/find', // 新闻内容查询
 }
+
+/**
+ *  友情链接管理
+ * @type {{MENU_LIST: string}}
+ */
+export const FlinkApi = {
+  ADD_FLINK: '/flink/add', // 资源类型类型添加
+  DEL_FLINK: '/flink/del', // 资源类型类型删除
+  UPDATE_FLINK: '/flink/update', // 资源类型类型修改
+  GET_FLINK: '/flink/findAll', // 资源类型类型查询
+  GET_FLINK_TYPE: '/flinkType/findAll', // 资源类型类型查询
+}
+
+/**
+ *  首页轮播图管理
+ * @type {{MENU_LIST: string}}
+ */
+export const CarouselApi = {
+  ADD_CAROUSE: '/carousel/add', // 首页轮播图添加
+  DEL_CAROUSE: '/carousel/del', // 首页轮播图删除
+  UPDATE_CAROUSE: '/carousel/update', // 首页轮播图修改
+  GET_CAROUSE: '/carousel/findAll', // 首页轮播图查询
+}
+

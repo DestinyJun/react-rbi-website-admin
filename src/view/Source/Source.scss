@@ -1,0 +1,35 @@
+/**
+* desc：Source组件样式表
+* author：DestinyJun
+* date：2021/2/21 19:20
+*/
+.source{
+  width: 100%;
+  height: 100%;
+  .source-title{
+    text-align: center;
+    font-weight: bolder;
+  }
+  .source-btn{
+    padding-bottom: 10px;
+  }
+  .source-modal{
+
+  }
+}
+.source-tree-box{
+  height: 20vh;
+  overflow-y: scroll;
+  &::-webkit-scrollbar{
+    width:0;
+    height:0;
+  }
+}
+.form{
+  height: 26vh;
+  overflow-y: scroll;
+  &::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+  }
+}

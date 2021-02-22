@@ -67,12 +67,11 @@ export class FlinkType extends Component {
   // 添加/修改
   flinkTypeSave () {
     let url,data;
+    data = this.flink_type_formRef.current.getFieldsValue()
     if (!this.state.flink_type_id) {
       url = FlinkTypeApi.ADD_FLINK_TYPE;
-      data = this.flink_type_formRef.current.getFieldsValue()
     } else {
       url = FlinkTypeApi.UPDATE_FLINK_TYPE;
-      data = this.flink_type_formRef.current.getFieldsValue();
       data['id'] = this.state.flink_type_id;
     }
     post(url, data)

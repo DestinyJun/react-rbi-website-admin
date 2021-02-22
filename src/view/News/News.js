@@ -19,7 +19,7 @@ import {
   Select,
   Modal,
   Tree,
-  InputNumber
+  InputNumber, message
 } from "antd";
 import {post} from "../../service/Interceptor";
 import {NewsApi} from "../../service/Apis";
@@ -124,15 +124,17 @@ export class News extends Component {
       this.news_files.forEach(item => {
         formData.append('thumb_img', item.originFileObj)
       })
+      post(url, formData)
+        .then(() => {
+          this.setState({
+            news_list_visible: false,
+          });
+          this.newsInit(this.state.news_pageNo,this.state.news_keyword);
+        })
+        .catch(err => {})
+    } else {
+      message.error('封面图片必须有！')
     }
-    post(url, formData)
-      .then(() => {
-        this.setState({
-          news_list_visible: false,
-        });
-        this.newsInit(this.state.news_pageNo,this.state.news_keyword);
-      })
-      .catch(err => {})
   }
 
   //删除
