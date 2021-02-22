@@ -26,6 +26,7 @@ import {News} from "../News/News";
 import {Source} from "../Source/Source";
 import {Flink} from "../Flink/Flink";
 import {Carousel} from "../Carousel/Carousel";
+import {reverseTree, transformTree} from "../../service/tools";
 const { SubMenu } = Menu;
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -35,8 +36,32 @@ export class Layouts extends Component {
     this.state = {
       layMenuList: []
     };
-    console.log(this.props);
   }
+
+  // 生命周期
+  componentDidMount() {
+    post(LayoutApi.MENU_LIST, {})
+      .then(res => {
+        const treeCopy = JSON.stringify(res.data);
+        const data = transformTree(
+          reverseTree(JSON.parse(treeCopy)).map((item) => {
+            const strArr = item.rule_router.split('/')
+            const str = strArr[strArr.length-1];
+            const strToUp = str.charAt(0).toUpperCase() + str.slice(1);
+            return {...item, component: strToUp}
+          })
+        )
+        console.log(data);
+        this.setState({
+          layMenuList: [...res.data]
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+  // 渲染
   render() {
     const {path, url} = this.props.match;
     const {pathname} = this.props.location;
@@ -92,6 +117,20 @@ export class Layouts extends Component {
             <Content className="content-body">
               <Switch>
                 <Route exact path={path} component={Home} />
+               {/* {
+                  this.state.layMenuList.length>0 && this.state.layMenuList.map((item,index) => {
+                    if ('children' in item) {
+                      return (<>
+                        {
+                          item.children.map((v,k) => (
+                          <Route exact key={`child_Menu_${k}`} path={`${path}/dataConfig/${v.rule_router}`} component={v.component} />
+                          ))
+                        }
+                      </>)
+                    }
+                    return (<Route exact key={`Menu_${index}`}  path={`${path}/${item.rule_router}`} component={item.component} />)
+                  })
+                }*/}
                 <Route exact path={`${path}/rule`} component={Rule} />
                 <Route exact path={`${path}/column`} component={Column} />
                 <Route exact path={`${path}/dataConfig/ruleAction`} component={RuleAction} />
@@ -111,16 +150,5 @@ export class Layouts extends Component {
         </Footer>
       </Layout>
     );
-  }
-  componentDidMount() {
-    post(LayoutApi.MENU_LIST, {})
-      .then(res => {
-        this.setState({
-          layMenuList: [...res.data]
-        })
-      })
-      .catch(err => {
-        console.log(err);
-      })
   }
 }

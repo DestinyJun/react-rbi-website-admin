@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import './App.scss';
 import {
   HashRouter as Router,
@@ -13,18 +13,28 @@ import {Layouts} from "./view/Layouts/Layout";
 import {LoadingStore} from "./redux/store";
 import {Spin} from "antd";
 
-function App() {
-  const [loadingShow, setLoadingShow] = useState(false)
-  useEffect(() => {
-    const subscription = LoadingStore.subscribe(() => {
-      setLoadingShow(LoadingStore.getState().isLoading)
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loadingShow: LoadingStore.getState().isLoading,
+    };
+    this.subscription = LoadingStore.subscribe(() => {
+      this.setState({loadingShow: LoadingStore.getState().isLoading})
     });
-    return () => {
-      subscription();
-    }
-  })
-  return (
-    <Router>
+  }
+  // 生命周期
+  componentDidMount() {}
+
+  // 组件挂载
+  componentWillUnmount() {
+    // 取消redux订阅
+    this.subscription()
+  }
+
+  // 渲染
+  render() {
+    return <Router>
       <Switch>
         <Route exact path="/">
           <Redirect to="/rbi" />
@@ -33,10 +43,7 @@ function App() {
         <Route exact path="/error" component={ErrorPage} />
         <Route path='/rbi' component={Layouts} />
       </Switch>
-      <div className="loading" hidden={!loadingShow} ><Spin size={"large"}/></div>
+      <div className="loading" hidden={!this.state.loadingShow} ><Spin size={"large"}/></div>
     </Router>
-  );
+  }
 }
-
-
-export default App;

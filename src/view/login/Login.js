@@ -14,18 +14,18 @@ export class Login extends Component {
     super(props);
     this.state = {};
   }
-  onFinish = (values) => {
+
+  // 登录
+  onLogin = (values) => {
     post('/login',values)
       .then(res => {
+        console.log(res);
         setObject('token',res.token)
         this.props.history.push('/')
       })
       .catch(err => {
         console.log(err);
       })
-  };
-  onFinishFailed = (errorInfo) => {
-    console.log(errorInfo);
   };
   render() {
     return (
@@ -41,8 +41,7 @@ export class Login extends Component {
             initialValues={{
               remember: true,
             }}
-            onFinish={this.onFinish}
-            onFinishFailed={this.onFinishFailed}
+            onFinish={this.onLogin}
           >
             <Form.Item label="用户名" name="username" rules={
               [
