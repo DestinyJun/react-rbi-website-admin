@@ -98,7 +98,7 @@ export class Column extends Component {
     const formData = new FormData;
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
-        if (!data[key]){
+        if (data[key]!==0 && !data[key]){
           continue
         }
         formData.append(key, data[key])
