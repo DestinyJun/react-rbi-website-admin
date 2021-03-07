@@ -5,10 +5,12 @@
  */
 import React from 'react';
 import {Redirect, Route} from "react-router-dom";
+import {getObject} from "../service/sessionStorage";
 
-const isLoading = true;
+const isLoading = getObject('token');
 
 export function Auth({children, ...rest}) {
+  console.log(children);
   return (
     <Route  {...rest} render={({location}) => {
       return isLoading ? (children) : (

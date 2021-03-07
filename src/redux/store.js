@@ -7,4 +7,4 @@ import {createStore} from "redux";
 import {LoadingReducer} from "./reducer";
 
 // loading加载控制
-export const LoadingStore = createStore(LoadingReducer)
+export const Store = createStore(LoadingReducer)

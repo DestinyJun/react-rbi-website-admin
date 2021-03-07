@@ -20,7 +20,7 @@ function setObject(key, value){
  * @returns {any}
  */
 function getObject(key){
-  return JSON.parse(LocalStorage.getItem(key) || {})
+  return JSON.parse(LocalStorage.getItem(key) || null)
 }
 
 /**

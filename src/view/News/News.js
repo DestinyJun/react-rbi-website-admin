@@ -86,8 +86,8 @@ export class News extends Component {
   }
 
   // 新闻数据初始化
-  newsInit(pageNo,name) {
-    post(NewsApi.GET_NEWS, {pageSize: 10,pageNo,name})
+  newsInit(pageNo,title) {
+    post(NewsApi.GET_NEWS, {pageSize: 10,pageNo,title})
       .then(res => {
         this.setState({
           news_list: res.data.map(item =>({...item,key: item.id})),
@@ -229,7 +229,7 @@ export class News extends Component {
         <div className={'new-drawer'}>
           <Drawer
             title="添加新闻"
-            width={'45vw'}
+            width={'50vw'}
             afterVisibleChange={(event) => {
               if (!event) {
                 this.news_formRef.current.resetFields();

@@ -8,6 +8,8 @@ import './Login.scss';
 import { Form, Input, Button } from 'antd';
 import {post} from "../../service/Interceptor";
 import {setObject} from "../../service/sessionStorage";
+import {isLogin} from "../../redux/action";
+import {Store} from "../../redux/store";
 
 export class Login extends Component {
   constructor(props) {
@@ -19,9 +21,8 @@ export class Login extends Component {
   onLogin = (values) => {
     post('/login',values)
       .then(res => {
-        console.log(res);
-        setObject('token',res.token)
-        this.props.history.push('/')
+        setObject('token',res.token);
+        Store.dispatch(isLogin())
       })
       .catch(err => {
         console.log(err);

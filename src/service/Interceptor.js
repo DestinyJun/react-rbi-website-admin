@@ -6,6 +6,7 @@ import {loadingHidden, loadingShow} from "../redux/action";
 import {message} from "antd";
 import {getObject} from "./sessionStorage";
 import {HashRouter} from "react-router-dom";
+import {Store} from "../redux/store";
 
 // 组件外路由跳转
 const router = new HashRouter()
@@ -33,7 +34,7 @@ axios.defaults.timeout = 10000;
 axios.interceptors.request.use(
   function (config) {
     // 加载loading
-    loadingShow();
+    Store.dispatch(loadingShow())
     // 配置token
     if (!(skipUrl.includes(config.url))) {
       config.headers['token'] = getObject('token');
@@ -49,7 +50,8 @@ axios.interceptors.request.use(
 // 响应拦截
 axios.interceptors.response.use(
   function (response) {
-    loadingHidden();
+    // 隐藏loading
+    Store.dispatch(loadingHidden())
     if (statusArr.includes(response.data.status)) {
       message.error(response.data.message)
       router.replace('/login')
