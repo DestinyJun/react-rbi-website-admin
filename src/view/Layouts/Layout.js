@@ -42,6 +42,7 @@ export class Layouts extends Component {
   componentDidMount() {
     post(LayoutApi.MENU_LIST, {})
       .then(res => {
+        console.log(res);
         const treeCopy = JSON.stringify(res.data);
         const data = transformTree(
           reverseTree(JSON.parse(treeCopy)).map((item) => {
@@ -51,7 +52,6 @@ export class Layouts extends Component {
             return {...item, component: strToUp}
           })
         )
-        console.log(data);
         this.setState({
           layMenuList: [...res.data]
         })
@@ -63,7 +63,8 @@ export class Layouts extends Component {
 
   // 渲染
   render() {
-    const {path, url} = this.props.match;
+    const path = this.props.path;
+    const url = this.props.path;
     const {pathname} = this.props.location;
     return (
       <Layout>

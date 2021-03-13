@@ -19,10 +19,12 @@ export class Login extends Component {
 
   // 登录
   onLogin = (values) => {
+    console.log(this.props);
     post('/login',values)
       .then(res => {
         setObject('token',res.token);
-        Store.dispatch(isLogin())
+        Store.dispatch(isLogin());
+        this.props.history.push('/rbi');
       })
       .catch(err => {
         console.log(err);
